@@ -7,7 +7,7 @@ Base = declarative_base()
 class Admin(Base):
     __tablename__ = "admins"
 
-    name = Column(String(100), nullable=False)
+    #name = Column(String(100), nullable=False)
     admin_id = Column(String(11), primary_key=True,index=True)
     password = Column(String(255),nullable=False)
     privileges = Column(Text)

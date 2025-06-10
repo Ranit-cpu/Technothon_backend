@@ -48,9 +48,9 @@ async def register_user(data: RegisterRequest, request: Request, db: AsyncSessio
         await db.rollback()
         raise HTTPException(status_code=500, detail=f"Error saving to DB: {str(e)}")
 
-    if "text/html" in request.headers.get("accept", ""):
-        return RedirectResponse(url="/", status_code=303)
-    return JSONResponse({"message": "Registration successful", "id": user_id})
+    request.session["user_id"] = user_id
+
+    return RedirectResponse(url="/login", status_code=303)
 
 
 async def generate_custom_id(db: AsyncSession) -> str:

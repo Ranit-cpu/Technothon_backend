@@ -4,11 +4,12 @@ from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 from app.routers.participants import participants_login, participant_dashboard, participants_register
 from app.routers.admin import alogin,admin_dashboard
+
 import os
 
 app = FastAPI()
 
-# Use environment variable or fallback secret key
+
 app.add_middleware(SessionMiddleware, secret_key=os.getenv("SESSION_SECRET_KEY", "your_super_secret_key_here"))
 
 app.include_router(participants_register.router,tags=["Register"])

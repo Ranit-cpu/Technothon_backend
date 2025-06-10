@@ -242,7 +242,28 @@
           return;
         }
 
-        alert("Login successful!");
+        fetch("/login", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    email: email.value,
+    password: password.value
+  })
+})
+.then(async res => {
+  const data = await res.json();
+  if (res.ok) {
+    window.location.href = data.redirect;
+  } else {
+    alert(data.detail || "Login failed");
+  }
+})
+.catch(() => {
+  alert("An error occurred. Please try again.");
+});
+
       });
 
       function validateEmail(email) {

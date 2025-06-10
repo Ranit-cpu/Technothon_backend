@@ -8,7 +8,7 @@ from sqlalchemy.future import select
 from app.database import get_session
 from app.models.auth_models import LoginRequest
 from app.models.participant_models import Participant
-
+from fastapi.responses import RedirectResponse
 router = APIRouter()
 
 templates = Jinja2Templates(directory="app/templates")
@@ -34,3 +34,7 @@ async def login_user(data: LoginRequest, request: Request, db: AsyncSession = De
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Internal error: {str(e)}")
 
+@router.get("/logout")
+async def logout_user(request: Request):
+    request.session.clear() 
+    return RedirectResponse(url="/", status_code=302)

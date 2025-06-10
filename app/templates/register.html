@@ -233,7 +233,7 @@
         showStrength(strength);
       });
 
-      form.addEventListener("submit", function (e) {
+      form.addEventListener("submit", async function (e) {
         e.preventDefault();
 
         if (!fullName.value.trim()) {
@@ -251,8 +251,37 @@
           return;
         }
 
-        alert("Registration successful!");
+        const payload = {
+          name: fullName.value.trim(),
+          email: email.value.trim(),
+          password: password.value
+        };
+
+        try {
+          const response = await fetch("/register", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "text/html, application/json"
+            },
+            body: JSON.stringify(payload)
+          });
+
+          if (response.redirected) {
+            window.location.href = response.url;
+          } else if (!response.ok) {
+            let error = await response.json();
+            alert("Error: " + (error.detail || "Unknown error"));
+          } else {
+            let res = await response.json();
+            alert("Registered successfully! ID: " + res.id);
+          }
+        } catch (error) {
+          console.error("Registration failed", error);
+          alert("An error occurred during registration.");
+        }
       });
+
 
       function validateEmail(email) {
         const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

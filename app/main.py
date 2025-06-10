@@ -1,8 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
-from fastapi.requests import Request
 from app.routers.participants import participants_login, participant_dashboard, participants_register
 from app.routers.admin import alogin,admin_dashboard
 import os

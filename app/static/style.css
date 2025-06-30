@@ -1,0 +1,127 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background: radial-gradient(circle at top, #6a00ff, #000000 90%);
+  color: #d3d3d3;
+  height: 100vh;
+  overflow: hidden;
+}
+
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem 3rem;
+  position: relative;
+  z-index: 10;
+}
+
+.logo {
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.navbar ul {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+  background: rgba(255, 255, 255, 0.05);
+  padding: 0.6rem 1.5rem;
+  border-radius: 25px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 12px #8f00ff;
+}
+
+.navbar a {
+  color: #ccc;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.navbar a:hover {
+  color: #ffffff;
+}
+
+.auth-links a {
+  color: #d3d3d3;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.3s ease;
+}
+
+.auth-links a:hover {
+  color: #ffffff;
+}
+
+.hero {
+  height: calc(100vh - 100px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.hero h1 {
+  font-size: 2.5rem;
+  font-weight: bold;
+  text-align: center;
+  color: #b5b5b5;
+}
+.sponsors {
+  padding: 2rem 0;
+  background: radial-gradient(circle at top, #3b007b, #000000 90%);
+  overflow: hidden;
+}
+
+.sponsor-slider {
+  white-space: nowrap;
+  position: relative;
+}
+
+.sponsor-track {
+  display: flex;
+  width: fit-content;
+  animation: scrollSponsors 25s linear infinite;
+  gap: 2rem;
+  align-items: center;
+}
+
+.sponsor-item {
+  flex: 0 0 auto;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 8px #a020f0;
+  backdrop-filter: blur(4px);
+  transition: transform 0.3s ease;
+}
+
+.sponsor-item:hover {
+  transform: scale(1.1);
+}
+
+.sponsor-item img {
+  width: 60%;
+  height: 60%;
+  object-fit: contain;
+  border-radius: 50%;
+  filter: drop-shadow(0 0 5px #c77dff);
+}
+
+@keyframes scrollSponsors {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}

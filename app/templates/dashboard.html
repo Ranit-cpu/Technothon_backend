@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dashboard | Technothon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to top right, #05001f, #1c023f);
+      color: white;
+    }
+
+    header {
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    nav a {
+      color: #ccc;
+      text-decoration: none;
+      margin-left: 20px;
+    }
+
+    main {
+      padding: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .user-info {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    .info-label {
+      font-weight: bold;
+      color: #8f94fb;
+    }
+
+    .info-value {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Technothon</div>
+    <nav>
+      <a href="/logout" style="color: red; font-weight: bold;">Logout</a>
+
+    </nav>
+  </header>
+
+  <main>
+    <h1>Welcome, {{ user.name }}!</h1>
+    <p>Your account details:</p>
+
+    <div class="user-info">
+      <div class="info-value">
+        <span class="info-label">ID:</span> {{ user.id }}
+      </div>
+      <div class="info-value">
+        <span class="info-label">Email:</span> {{ user.email }}
+      </div>
+      <div class="info-value">
+        <span class="info-label">Created At:</span> {{ user.created_at }}
+      </div>
+    </div>
+  </main>
+</body>
+</html>

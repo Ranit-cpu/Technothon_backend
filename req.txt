@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+pydantic
+mysql-connector-python
+python-multipart
+werkzeug
+sqlalchemy
+python-dotenv
+aiomysql
+jinja2
+aiosqlite

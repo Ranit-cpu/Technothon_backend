@@ -10,7 +10,7 @@ from datetime import datetime
 from app.models.auth_models import UserRegisterRequest
 from app.models.participant_models import Participant
 from app.database import get_sql_session, get_sqlite_session
-from app.models.User import Student
+from app.models.User_models import Student
 
 router = APIRouter(tags=["Register"])
 templates = Jinja2Templates(directory="app/templates")
@@ -46,7 +46,8 @@ async def register_user(data: UserRegisterRequest, request: Request, db_sql: Asy
         name=data.name,
         email=data.email,
         password=hashed_pw,
-        created_at=datetime.utcnow()
+        created_at=datetime.utcnow(),
+        studentID=data.college_id
     )
 
     db_sql.add(new_user)
@@ -58,7 +59,7 @@ async def register_user(data: UserRegisterRequest, request: Request, db_sql: Asy
 
     request.session["user_id"] = user_id
 
-    return RedirectResponse(url="/login", status_code=303)
+    return RedirectResponse(url="/User_login", status_code=303)
 
 
 async def generate_custom_id(db: AsyncSession) -> str:

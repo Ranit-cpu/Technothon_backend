@@ -18,7 +18,7 @@
 #     return templates.TemplateResponse("login.html", {"request": request})
 #
 # #@router.post("/login")      #Create
-# async def login_user(data: LoginRequest, request: Request, db_sql: AsyncSession = Depends(get_sql_session)):
+# async def login_participant(data: LoginRequest, request: Request, db_sql: AsyncSession = Depends(get_sql_session)):
 #     result = await db_sql.execute(select(Participant).where(Participant.email == data.email))
 #     user = result.scalar_one_or_none()
 #

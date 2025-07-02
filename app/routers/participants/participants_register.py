@@ -7,7 +7,7 @@ from starlette.templating import Jinja2Templates
 from werkzeug.security import generate_password_hash
 from datetime import datetime
 
-from app.models.auth_models import ParticipantRegisteRequest
+from app.models.auth_models import ParticipantRegisterRequest
 from app.models.participant_models import Participant
 from app.database import get_sql_session, get_sqlite_session
 from app.models.User_models import Student
@@ -22,7 +22,7 @@ async def show_register_page(request: Request):
 
 
 #@router.post("/register")
-async def register_participant(data: ParticipantRegisteRequest, request: Request, db_sql: AsyncSession = Depends(get_sql_session),
+async def register_participant(data: ParticipantRegisterRequest, request: Request, db_sql: AsyncSession = Depends(get_sql_session),
                         db_sqlite: AsyncSession = Depends(get_sqlite_session)):
     # Check if email already exists
     result = await db_sql.execute(select(Participant).where(Participant.email == data.email))

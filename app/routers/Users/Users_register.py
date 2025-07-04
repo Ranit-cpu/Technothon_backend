@@ -7,10 +7,11 @@ from starlette.templating import Jinja2Templates
 from werkzeug.security import generate_password_hash
 from datetime import datetime
 
+from app.models.Users_models import User
 from app.models.auth_models import UserRegisterRequest
 from app.models.participant_models import Participant
 from app.database import get_sql_session, get_sqlite_session
-from app.models.User_models import Student
+from app.models.Students_models import Student
 
 router = APIRouter(tags=["Register"])
 templates = Jinja2Templates(directory="app/templates")
@@ -25,7 +26,7 @@ async def show_register_page(request: Request):
 async def register_user(data: UserRegisterRequest, request: Request, db_sql: AsyncSession = Depends(get_sql_session),
                         db_sqlite: AsyncSession = Depends(get_sqlite_session)):
     # Check if email already exists
-    result = await db_sql.execute(select(Participant).where(Participant.email == data.email))
+    result = await db_sql.execute(select(User).where(User.Student_ID == data.college_id))
     existing_user = result.scalar_one_or_none()
 
     result_eligible = await db_sqlite.execute(select(Student).where(Student.Student_ID == data.college_id,Student.OverAll_Percentage >=1 ))
@@ -35,19 +36,20 @@ async def register_user(data: UserRegisterRequest, request: Request, db_sql: Asy
         raise HTTPException(status_code=409, detail="Your cannot register to Technothon.")
 
     if existing_user:
-        raise HTTPException(status_code=409, detail="Email already registered")
+        raise HTTPException(status_code=409, detail="User already registered")
 
     # Generate unique ID
     user_id = await generate_custom_id(db_sql)
     hashed_pw = generate_password_hash(data.password)
 
-    new_user = Participant(
+    new_user = User(
+        Student_ID=data.college_id,
+        Name=data.name,
         id=user_id,
-        name=data.name,
-        email=data.email,
+        Batch = user_attendance.Batch,
         password=hashed_pw,
-        created_at=datetime.utcnow(),
-        studentID=data.college_id
+        OverAll_Percentage = user_attendance.OverAll_Percentage,
+        created_at=datetime.utcnow()
     )
 
     db_sql.add(new_user)

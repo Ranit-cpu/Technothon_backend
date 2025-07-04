@@ -10,7 +10,7 @@ from datetime import datetime
 from app.models.auth_models import ParticipantRegisterRequest
 from app.models.participant_models import Participant
 from app.database import get_sql_session, get_sqlite_session
-from app.models.User_models import Student
+from app.models.Students_models import Student
 
 router = APIRouter(tags=["Register"])
 templates = Jinja2Templates(directory="app/templates")

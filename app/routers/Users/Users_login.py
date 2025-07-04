@@ -7,7 +7,7 @@ from werkzeug.security import check_password_hash
 from sqlalchemy.future import select
 from app.database import get_sql_session
 from app.models.auth_models import UserLoginRequest
-from app.models.participant_models import Participant
+from app.models.Users_models import User
 from fastapi.responses import RedirectResponse
 router = APIRouter()
 
@@ -19,7 +19,7 @@ async def show_register_page(request: Request):
 
 @router.post("/User_login")      #Create
 async def login_user(data: UserLoginRequest, request: Request, db: AsyncSession = Depends(get_sql_session)):
-    result = await db.execute(select(Participant).where(Participant.email == data.email))
+    result = await db.execute(select(User).where(User.Student_ID == data.college_id))
     user = result.scalar_one_or_none()
 
     if user is None:

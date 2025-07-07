@@ -25,14 +25,14 @@ async def show_register_page(request: Request):
 @router.post("/User_register")
 async def register_user(data: UserRegisterRequest, request: Request, db_sql: AsyncSession = Depends(get_sql_session),
                         db_sqlite: AsyncSession = Depends(get_sqlite_session)):
-    # Check if email already exists
+    # Check if ID already exists
     result = await db_sql.execute(select(User).where(User.Student_ID == data.college_id))
     existing_user = result.scalar_one_or_none()
 
     result_eligible = await db_sqlite.execute(select(Student).where(Student.Student_ID == data.college_id,Student.OverAll_Percentage >=1 ))
-    user_attendance = result_eligible.scalar_one_or_none()
+    user = result_eligible.scalar_one_or_none()
 
-    if not user_attendance:
+    if not user:
         raise HTTPException(status_code=409, detail="Your cannot register to Technothon.")
 
     if existing_user:
@@ -46,10 +46,11 @@ async def register_user(data: UserRegisterRequest, request: Request, db_sql: Asy
         Student_ID=data.college_id,
         Name=data.name,
         id=user_id,
-        Batch = user_attendance.Batch,
+        Batch = user.Batch,
         password=hashed_pw,
-        OverAll_Percentage = user_attendance.OverAll_Percentage,
-        created_at=datetime.utcnow()
+        OverAll_Percentage = user.OverAll_Percentage,
+        created_at=datetime.utcnow(),
+        email = data.email
     )
 
     db_sql.add(new_user)

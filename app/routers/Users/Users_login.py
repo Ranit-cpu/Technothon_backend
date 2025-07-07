@@ -9,6 +9,7 @@ from app.database import get_sql_session
 from app.models.auth_models import UserLoginRequest
 from app.models.Users_models import User
 from fastapi.responses import RedirectResponse
+
 router = APIRouter()
 
 templates = Jinja2Templates(directory="app/templates")

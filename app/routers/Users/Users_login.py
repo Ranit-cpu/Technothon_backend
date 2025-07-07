@@ -20,7 +20,8 @@ async def show_register_page(request: Request):
 
 @router.post("/User_login")      #Create
 async def login_user(data: UserLoginRequest, request: Request, db: AsyncSession = Depends(get_sql_session)):
-    result = await db.execute(select(User).where(User.Student_ID == data.college_id))
+
+    result = await db.execute(select(User).where(User.email == data.email))
     user = result.scalar_one_or_none()
 
     if user is None:

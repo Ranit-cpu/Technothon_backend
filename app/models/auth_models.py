@@ -7,7 +7,7 @@ class UserRegisterRequest(BaseModel):
     college_id: str
 
 class UserLoginRequest(BaseModel):
-    college_id : str
+    email : EmailStr
     password: str
 
 class AdminLoginRequest(BaseModel):

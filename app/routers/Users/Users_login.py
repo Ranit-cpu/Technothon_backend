@@ -29,7 +29,7 @@ async def login_user(data: UserLoginRequest, request: Request, db: AsyncSession 
 
     try:
         if check_password_hash(user.password, data.password):
-            request.session['user_id'] = user.id
+            request.session['user_id'] = user.uid
             return {"status": "success", "message": "Login successful", "redirect": "/dashboard"}
         else:
             raise HTTPException(status_code=401, detail="Invalid credentials")

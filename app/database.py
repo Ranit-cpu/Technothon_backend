@@ -6,7 +6,7 @@ from sqlalchemy.orm import sessionmaker
 from typing import AsyncGenerator
 
 #SQL Database initialization
-DATABASE_URL_SQL = "mysql+aiomysql://Ranit:12345@localhost/TechnothonDB"
+DATABASE_URL_SQL = "mysql+aiomysql://<username>:<password>@localhost/technothon_db"
 
 engine_mysql = create_async_engine(DATABASE_URL_SQL, echo=True)
 AsyncSessionMySQL = sessionmaker(

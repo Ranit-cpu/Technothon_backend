@@ -1,12 +1,10 @@
 # app/models/Students_models.py
 from sqlalchemy import Column, String, BigInteger,Numeric,DateTime
-from sqlalchemy.orm import declarative_base
-
-Base_sqlite = declarative_base()
+from app.models.base import Base_sqlite
 
 class Student(Base_sqlite):
 
-    __tablename__ = "students"
+    __tablename__ = "Students"
 
     Student_ID = Column(BigInteger, primary_key=True, index=True)
     Name = Column(String(100), nullable=False)

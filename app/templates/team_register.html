@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Register Team | Technothon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to top right, #05001f, #1c023f);
+      color: white;
+    }
+
+    header {
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+
+    nav a {
+      color: #ccc;
+      text-decoration: none;
+      margin-left: 20px;
+    }
+
+    main {
+      padding: 40px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    form {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    input, textarea, select, button {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      margin-top: 10px;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      border: none;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #8f94fb;
+      color: #fff;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #6c70e8;
+    }
+
+    .member-list {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+
+    .member-item {
+      padding: 10px;
+      margin: 5px 0;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .member-item.leader {
+      background: rgba(143, 148, 251, 0.2);
+      border: 1px solid #8f94fb;
+    }
+
+    .remove-btn {
+      background: #ff4c4c;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      width: auto;
+      display: inline-block;
+      margin: 0;
+    }
+
+    .remove-btn:hover {
+      background: #ff1c1c;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    #uid_results {
+      position: absolute;
+      background: white;
+      color: black;
+      z-index: 1000;
+      width: 100%;
+      border-radius: 4px;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    #uid_results div {
+      padding: 10px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+    }
+
+    #uid_results div:hover {
+      background-color: #f0f0f0;
+    }
+
+    .search-container {
+      position: relative;
+    }
+
+    .member-count {
+      color: #8f94fb;
+      font-size: 0.9rem;
+      margin-bottom: 10px;
+    }
+
+    .info-text {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Technothon</div>
+    <nav>
+      <a href="/dashboard" style="color: #8f94fb;">← Back to Dashboard</a>
+      <a href="/logout" style="color: red; font-weight: bold;">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Register Your Team</h1>
+
+    <form id="teamForm" onsubmit="event.preventDefault(); showMemberSection();">
+      <label for="team_name">Team Name</label>
+      <input type="text" id="team_name" name="team_name" required>
+
+      <label for="idea_title">Idea Title</label>
+      <input type="text" id="idea_title" name="idea_title" required>
+
+      <label for="idea_description">Idea Description</label>
+      <textarea id="idea_description" name="idea_description" rows="4" required></textarea>
+
+      <label for="creator_role">Your Role in the Team</label>
+      <select id="creator_role" name="creator_role" required>
+        <option value="">Select your role...</option>
+        <option value="Team Leader">Team Leader</option>
+        <option value="Project Manager">Project Manager</option>
+        <option value="Lead Developer">Lead Developer</option>
+        <option value="Frontend Developer">Frontend Developer</option>
+        <option value="Backend Developer">Backend Developer</option>
+        <option value="UI/UX Designer">UI/UX Designer</option>
+        <option value="Data Scientist">Data Scientist</option>
+        <option value="AI/ML Engineer">AI/ML Engineer</option>
+        <option value="DevOps Engineer">DevOps Engineer</option>
+        <option value="Quality Assurance">Quality Assurance</option>
+        <option value="Business Analyst">Business Analyst</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <button type="submit">Save and Add Members</button>
+    </form>
+
+    <div id="memberSection" class="hidden">
+      <h2>Add Team Members</h2>
+      
+      <div class="info-text">
+        You are automatically added as the team creator. Please add 4 more members and assign their roles to complete your team (5-6 members total).
+      </div>
+
+      <div class="member-list" id="selected_members">
+        <h3>Team Members:</h3>
+        <div class="member-count" id="member_count">Members: 1/6</div>
+      </div>
+
+      <label for="uid_input">Search and Add Member</label>
+      <div class="search-container">
+        <input type="text" id="uid_input" placeholder="Type UID (e.g., T250001)" oninput="searchUID()" autocomplete="off">
+        <div id="uid_results"></div>
+      </div>
+
+      <label for="member_role">Role for Selected Member</label>
+      <select id="member_role" required>
+        <option value="">Select role for this member...</option>
+        <option value="Team Leader">Team Leader</option>
+        <option value="Project Manager">Project Manager</option>
+        <option value="Lead Developer">Lead Developer</option>
+        <option value="Frontend Developer">Frontend Developer</option>
+        <option value="Backend Developer">Backend Developer</option>
+        <option value="UI/UX Designer">UI/UX Designer</option>
+        <option value="Data Scientist">Data Scientist</option>
+        <option value="AI/ML Engineer">AI/ML Engineer</option>
+        <option value="DevOps Engineer">DevOps Engineer</option>
+        <option value="Quality Assurance">Quality Assurance</option>
+        <option value="Business Analyst">Business Analyst</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <button onclick="addMember()">Add Selected Member</button>
+      <button onclick="submitFullTeam()" id="finalize_btn" style="background-color: #28a745; margin-top: 20px;" disabled>Finalize Team Registration</button>
+    </div>
+  </main>
+
+  <script>
+    // Store current user info and selected members
+    const currentUserId = "{{ user_id }}";
+    const currentUserName = "{{ user_name }}"; // We'll need to pass this from backend
+    let selectedMembers = [];
+    let selectedUID = null;
+
+    // Initialize when page loads
+    window.addEventListener("DOMContentLoaded", () => {
+      // Add current user as team creator automatically
+      if (currentUserId) {
+        selectedMembers.push({ 
+          uid: currentUserId, 
+          name: currentUserName || "You", 
+          role: "Creator" // Will be updated when form is submitted
+        });
+      }
+    });
+
+    function showMemberSection() {
+      const creatorRole = document.getElementById('creator_role').value;
+      if (!creatorRole) {
+        alert("Please select your role in the team first.");
+        return;
+      }
+
+      document.getElementById('teamForm').classList.add('hidden');
+      document.getElementById('memberSection').classList.remove('hidden');
+      
+      // Update creator's role
+      if (selectedMembers.length > 0) {
+        selectedMembers[0].role = creatorRole;
+      }
+      
+      renderSelectedMembers();
+    }
+
+    function renderSelectedMembers() {
+      const container = document.getElementById('selected_members');
+      const countElement = document.getElementById('member_count');
+      
+      // Clear existing content except title and count
+      const existingMembers = container.querySelectorAll('.member-item');
+      existingMembers.forEach(item => item.remove());
+
+      // Update count
+      countElement.textContent = `Members: ${selectedMembers.length}/6`;
+
+      // Render all members
+      selectedMembers.forEach((member, index) => {
+        const div = document.createElement('div');
+        div.className = `member-item ${member.uid === currentUserId ? 'leader' : ''}`;
+        
+        const memberInfo = document.createElement('span');
+        memberInfo.textContent = `${member.uid} - ${member.name} (${member.role})`;
+        div.appendChild(memberInfo);
+
+        // Add remove button for non-creators
+        if (member.uid !== currentUserId) {
+          const removeBtn = document.createElement('button');
+          removeBtn.textContent = 'Remove';
+          removeBtn.className = 'remove-btn';
+          removeBtn.onclick = () => removeMember(index);
+          div.appendChild(removeBtn);
+        }
+
+        container.appendChild(div);
+      });
+
+      // Enable/disable finalize button
+      const finalizeBtn = document.getElementById('finalize_btn');
+      if (selectedMembers.length >= 5 && selectedMembers.length <= 6) {
+        finalizeBtn.disabled = false;
+        finalizeBtn.style.opacity = '1';
+      } else {
+        finalizeBtn.disabled = true;
+        finalizeBtn.style.opacity = '0.5';
+      }
+    }
+
+    function removeMember(index) {
+      selectedMembers.splice(index, 1);
+      renderSelectedMembers();
+    }
+
+    function searchUID() {
+      const input = document.getElementById('uid_input');
+      const query = input.value.trim();
+      const results = document.getElementById('uid_results');
+
+      // Only search when UID is exactly 7 characters long (complete UID)
+      if (query.length !== 7) {
+        results.innerHTML = '';
+        selectedUID = null;
+        return;
+      }
+
+      fetch(`/search-user?uid=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(users => {
+          results.innerHTML = '';
+          selectedUID = null;
+
+          if (users.length === 0) {
+            const div = document.createElement('div');
+            div.innerText = 'No user found.';
+            div.style.padding = '10px';
+            div.style.color = '#666';
+            results.appendChild(div);
+            return;
+          }
+
+          users.forEach(user => {
+            // Skip if user is already in team
+            if (selectedMembers.some(member => member.uid === user.uid)) {
+              return;
+            }
+
+            const div = document.createElement('div');
+            div.innerText = `${user.uid} - ${user.Name}`;
+            div.addEventListener('click', () => {
+              document.getElementById('uid_input').value = `${user.uid} - ${user.Name}`;
+              selectedUID = user;
+              results.innerHTML = '';
+            });
+            results.appendChild(div);
+          });
+        })
+        .catch(err => {
+          console.error('Search error:', err);
+          results.innerHTML = '<div style="padding: 10px; color: red;">Search failed</div>';
+        });
+    }
+
+    function addMember() {
+      if (!selectedUID) {
+        alert("Please search and select a user first.");
+        return;
+      }
+
+      const memberRole = document.getElementById('member_role').value;
+      if (!memberRole) {
+        alert("Please select a role for this member.");
+        return;
+      }
+
+      // Check if already added
+      if (selectedMembers.some(member => member.uid === selectedUID.uid)) {
+        alert("This user is already in the team.");
+        return;
+      }
+
+      // Check team size limit
+      if (selectedMembers.length >= 6) {
+        alert("Team is full (maximum 6 members).");
+        return;
+      }
+
+      // Add member
+      selectedMembers.push({
+        uid: selectedUID.uid,
+        name: selectedUID.Name,
+        role: memberRole
+      });
+
+      // Clear input and selection
+      document.getElementById('uid_input').value = '';
+      document.getElementById('uid_results').innerHTML = '';
+      document.getElementById('member_role').value = '';
+      selectedUID = null;
+
+      renderSelectedMembers();
+    }
+
+    function submitFullTeam() {
+      const teamName = document.getElementById('team_name').value;
+      const ideaTitle = document.getElementById('idea_title').value;
+      const ideaDescription = document.getElementById('idea_description').value;
+
+      if (selectedMembers.length < 5) {
+        alert("Team must have at least 5 members.");
+        return;
+      }
+
+      if (selectedMembers.length > 6) {
+        alert("Team cannot have more than 6 members.");
+        return;
+      }
+
+      const payload = {
+        team_name: teamName,
+        idea_title: ideaTitle,
+        idea_description: ideaDescription,
+        existing_members: selectedMembers.map(member => ({
+          uid: member.uid,
+          role: member.role
+        })),
+        new_member: null,
+        created_by_id: currentUserId,
+        event_id: "TT01"
+      };
+
+      fetch('/team/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.team_id) {
+          alert(`Team registered successfully! Team ID: ${data.team_id}`);
+          window.location.href = "/dashboard";
+        } else {
+          alert(`Registration failed: ${data.detail || 'Unknown error'}`);
+        }
+      })
+      .catch(err => {
+        console.error('Registration error:', err);
+        alert('Registration failed. Please try again.');
+      });
+    }
+
+    // Clear search results when clicking outside
+    document.addEventListener('click', function(event) {
+      const searchContainer = document.querySelector('.search-container');
+      const results = document.getElementById('uid_results');
+      
+      if (!searchContainer.contains(event.target)) {
+        results.innerHTML = '';
+      }
+    });
+  </script>
+</body>
+</html>

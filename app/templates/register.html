@@ -344,27 +344,19 @@
 
         xhr.onreadystatechange = function () {
           if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status >= 300 && xhr.status < 400) {
-              // Handle redirect
-              const redirectUrl = xhr.getResponseHeader("Location") || "/User_login";
-              window.location.href = redirectUrl;
-            } else if (xhr.status >= 400) {
-              let error;
-              try {
-                error = JSON.parse(xhr.responseText);
-                alert("Error: " + (error.detail || "Unknown error"));
-              } catch (e) {
-                alert("Error: Unknown error");
-              }
-            } else {
-              let res;
-              try {
-                res = JSON.parse(xhr.responseText);
-                alert("Registered successfully! ID: " + res.id);
-              } catch (e) {
-                alert("Registration completed, but response format is unexpected.");
-              }
-            }
+           if (xhr.status >= 200 && xhr.status < 300) {
+  // Registration successful — redirect to login
+  window.location.href = "/User_login";
+} else {
+  let error;
+  try {
+    error = JSON.parse(xhr.responseText);
+    alert("Error: " + (error.detail || "Unknown error"));
+  } catch (e) {
+    alert("Error: Unknown error");
+  }
+}
+
           }
         };
 

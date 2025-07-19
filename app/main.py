@@ -4,6 +4,9 @@ from starlette.staticfiles import StaticFiles
 from starlette.templating import Jinja2Templates
 from app.routers.Users import Users_register,Users_login,Users_dashboard
 from app.routers.admin import alogin,admin_dashboard
+from app.routers.teams import team_register
+from app.routers.events import admin_event
+from app.routers.payments import payment_route
 
 import os
 
@@ -17,6 +20,9 @@ app.include_router(Users_login.router,tags=["Login"])
 app.include_router(Users_dashboard.router,tags=["Dashboard"])
 app.include_router(alogin.router, prefix="/admin", tags=["Login"])
 app.include_router(admin_dashboard.router,tags=["Dashboard"])
+app.include_router(admin_event.router, tags=["Admin Events"])
+app.include_router(team_register.router, tags=["Team Registration"])
+app.include_router(payment_route.router, tags=["Payment"])
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 templates = Jinja2Templates(directory="app/templates")

@@ -1,8 +1,5 @@
 from sqlalchemy import Column, String,Text
-from sqlalchemy.orm import declarative_base
-
-
-Base = declarative_base()
+from app.models.base import Base
 
 class Admin(Base):
     __tablename__ = "admins"

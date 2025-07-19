@@ -33,7 +33,7 @@ async def show_register_page(request: Request):
 async def handle_user_register(data: StudentIdRequest, request: Request, db_sql: AsyncSession = Depends(get_sql_session),
                               db_sqlite: AsyncSession = Depends(get_sqlite_session)):
     # Check if ID already exists
-    result = await db_sql.execute(select(User).where(User.college_id == data.college_id))
+    result = await db_sql.execute(select(User).where(User.Student_ID == data.college_id))
     existing_user = result.scalar_one_or_none()
 
     # Check if ID is eligible
@@ -61,7 +61,7 @@ async def handle_user_register(data: StudentIdRequest, request: Request, db_sql:
     hashed_pw = generate_password_hash(data.password)
 
     new_user = User(
-        college_id=data.college_id,
+        Student_ID=data.college_id,
         Name=data.name,
         uid=user_id,
         password=hashed_pw,

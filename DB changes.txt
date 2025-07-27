@@ -1,3 +1,5 @@
+mysql> use technothondb
+Database changed
 mysql> show tables;
 +------------------------+
 | Tables_in_technothondb |
@@ -8,7 +10,22 @@ mysql> show tables;
 | teams                  |
 | users                  |
 +------------------------+
-5 rows in set (0.07 sec)
+5 rows in set (0.05 sec)
+
+mysql> describe events;
++---------------+--------------+------+-----+---------+-------+
+| Field         | Type         | Null | Key | Default | Extra |
++---------------+--------------+------+-----+---------+-------+
+| eid           | varchar(255) | NO   | PRI | NULL    |       |
+| name          | varchar(255) | YES  |     | NULL    |       |
+| description   | text         | YES  |     | NULL    |       |
+| event_type    | varchar(255) | YES  |     | NULL    |       |
+| start_date    | date         | YES  |     | NULL    |       |
+| end_date      | date         | YES  |     | NULL    |       |
+| prize_details | text         | YES  |     | NULL    |       |
+| is_live       | tinyint(1)   | YES  |     | NULL    |       |
++---------------+--------------+------+-----+---------+-------+
+8 rows in set (0.03 sec)
 
 mysql> describe participants;
 +----------+--------------+------+-----+---------+-------+
@@ -22,7 +39,19 @@ mysql> describe participants;
 | event_id | varchar(255) | YES  | MUL | NULL    |       |
 | role     | varchar(50)  | NO   |     | member  |       |
 +----------+--------------+------+-----+---------+-------+
-7 rows in set (0.03 sec)
+7 rows in set (0.02 sec)
+
+mysql> describe payments;
++----------------+--------------+------+-----+-------------------+-------------------+
+| Field          | Type         | Null | Key | Default           | Extra             |
++----------------+--------------+------+-----+-------------------+-------------------+
+| transaction_id | varchar(255) | NO   | PRI | NULL              |                   |
+| utr_no         | varchar(255) | YES  |     | NULL              |                   |
+| bank_name      | varchar(255) | YES  |     | NULL              |                   |
+| upi_id         | varchar(255) | YES  |     | NULL              |                   |
+| paid_at        | timestamp    | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED |
++----------------+--------------+------+-----+-------------------+-------------------+
+5 rows in set (0.00 sec)
 
 mysql> describe teams;
 +------------------+--------------+------+-----+-------------------+-----------------------------------------------+
@@ -37,16 +66,17 @@ mysql> describe teams;
 | transaction_id   | varchar(255) | YES  | MUL | NULL              |                                               |
 | created_at       | timestamp    | NO   |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED on update CURRENT_TIMESTAMP |
 +------------------+--------------+------+-----+-------------------+-----------------------------------------------+
-8 rows in set (0.01 sec)
+8 rows in set (0.05 sec)
 
-mysql> describe payments;
-+----------------+--------------+------+-----+-------------------+-------------------+
-| Field          | Type         | Null | Key | Default           | Extra             |
-+----------------+--------------+------+-----+-------------------+-------------------+
-| transaction_id | varchar(255) | NO   | PRI | NULL              |                   |
-| utr_no         | varchar(255) | YES  |     | NULL              |                   |
-| bank_name      | varchar(255) | YES  |     | NULL              |                   |
-| upi_id         | varchar(255) | YES  |     | NULL              |                   |
-| paid_at        | timestamp    | YES  |     | CURRENT_TIMESTAMP | DEFAULT_GENERATED |
-+----------------+--------------+------+-----+-------------------+-------------------+
-5 rows in set (0.01 sec)
+mysql> describe users;
++------------+--------------+------+-----+---------+-------+
+| Field      | Type         | Null | Key | Default | Extra |
++------------+--------------+------+-----+---------+-------+
+| uid        | varchar(255) | NO   | PRI | NULL    |       |
+| Name       | varchar(100) | NO   |     | NULL    |       |
+| email      | varchar(100) | NO   | UNI | NULL    |       |
+| Student_ID | varchar(100) | NO   | UNI | NULL    |       |
+| password   | varchar(255) | NO   |     | NULL    |       |
+| created_at | datetime     | YES  |     | NULL    |       |
++------------+--------------+------+-----+---------+-------+
+6 rows in set (0.00 sec)

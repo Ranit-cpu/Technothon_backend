@@ -6,7 +6,6 @@ from starlette.templating import Jinja2Templates
 from werkzeug.security import check_password_hash
 from sqlalchemy.future import select
 from app.database import get_sql_session
-from app.models.auth_models import UserLoginRequest
 from app.models.Users_models import User
 from fastapi.responses import RedirectResponse
 
@@ -18,25 +17,41 @@ templates = Jinja2Templates(directory="app/templates")
 async def show_register_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
-@router.post("/User_login")      #Create
-async def login_user(data: UserLoginRequest, request: Request, db: AsyncSession = Depends(get_sql_session)):
+@router.post("/User_login")
+async def login_user(request: Request, db: AsyncSession = Depends(get_sql_session)):
+    data = await request.json()
+    email = data.get("email")
+    password = data.get("password")
 
-    result = await db.execute(select(User).where(User.email == data.email))
+    result = await db.execute(select(User).where(User.email == email))
     user = result.scalar_one_or_none()
 
-    if user is None:
+    if user is None or not check_password_hash(user.password, password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    try:
-        if check_password_hash(user.password, data.password):
-            request.session['user_id'] = user.uid
-            return {"status": "success", "message": "Login successful", "redirect": "/dashboard"}
-        else:
-            raise HTTPException(status_code=401, detail="Invalid credentials")
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Internal error: {str(e)}")
+    request.session["user_id"] = user.uid
+    return {"status": "success", "message": "Login successful", "redirect": "/dashboard"}
 
 @router.get("/logout")
 async def logout_user(request: Request):
     request.session.clear() 
     return RedirectResponse(url="/", status_code=302)
+
+@router.get("/me")
+async def get_current_user(request: Request, db: AsyncSession = Depends(get_sql_session)):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Not logged in")
+
+    result = await db.execute(select(User).where(User.uid == user_id))
+    user = result.scalar_one_or_none()
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    request.session["user_id"] = user.uid
+    return {
+        "uid": user.uid,
+        "name": user.Name,
+        "email": user.email,
+    }

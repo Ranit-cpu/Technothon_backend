@@ -1,13 +1,15 @@
 # app/database.py
-from contextlib import asynccontextmanager
-
+import os
 #SQLAlchemy imports
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
 from typing import AsyncGenerator
 
+DATABASE_URL_SQL = os.getenv("DATABASE_URL_SQL")
+
 #SQL Database initialization
-DATABASE_URL_SQL = "mysql+aiomysql://root:12345@localhost/TechnothonDb"
+if not DATABASE_URL_SQL:
+    DATABASE_URL_SQL = "mysql+aiomysql://Technothon:12345@db:3306/TechnothonDB"
 
 engine_mysql = create_async_engine(DATABASE_URL_SQL, echo=True)
 AsyncSessionMySQL = sessionmaker(
@@ -23,8 +25,11 @@ async def get_sql_session() -> AsyncGenerator[AsyncSession, None]:
             await session.close()
 
 
+DATABASE_URL_SQLite = os.getenv("DATABASE_URL_SQLITE")
+
 #SQLite Database initialization
-DATABASE_URL_SQLite = "sqlite+aiosqlite:///./technothon.db"
+if not DATABASE_URL_SQLite:
+    DATABASE_URL_SQLite = "sqlite+aiosqlite:///./technothon.db"
 
 engine_sqlite = create_async_engine(DATABASE_URL_SQLite, echo = True)
 AsyncSessionSQLite=sessionmaker(

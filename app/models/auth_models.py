@@ -6,7 +6,15 @@ class UserRegisterRequest(BaseModel):
     name: str
     email: EmailStr
     password: str
+    college_id: str  
+    phone_no: str
+    whatsapp_no: str
+
+class StudentIdRequest(BaseModel):
     college_id: str
+    name: Optional[str] = None
+    email: Optional[str] = None
+    password: Optional[str] = None
 
 class UserLoginRequest(BaseModel):
     email : EmailStr

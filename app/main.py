@@ -15,10 +15,10 @@ import os
 app = FastAPI()
 
 origins = [
-    "http://43.204.96.98:3000", 
+    "http://43.204.96.98:8000", 
     "http://43.204.96.98:5173",
     "https://technothon-frontend.vercel.app",  # Vercel frontend
-    "http://localhost:3000",                   # Local development
+    "http://localhost:8000",                   # Local development
 ]
 # Add CORS middleware
 app.add_middleware(

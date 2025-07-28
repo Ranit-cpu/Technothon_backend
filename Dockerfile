@@ -11,8 +11,6 @@ RUN pip3 install -r req.txt
 # Copy app files
 COPY . .
 
-RUN python3 db.py
-
 # Expose FastAPI port
 EXPOSE 8000
 

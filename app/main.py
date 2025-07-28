@@ -14,10 +14,16 @@ import os
 
 app = FastAPI()
 
+origins = [
+    "http://43.204.96.98:3000", 
+    "http://43.204.96.98:5173",
+    "https://technothon-frontend.vercel.app",  # Vercel frontend
+    "http://localhost:3000",                   # Local development
+]
 # Add CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://43.204.96.98:3000", "http://43.204.96.98:5173"],  # React dev server origins
+    allow_origins=origins,  # React dev server origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

@@ -12,7 +12,7 @@ Student_ID,Name,Batch,Overall Percentage
 221001001118,Koushtav Paul Majumder,BCS 3A,24%
 221001001101,Manojeet Bhowmick,BCS 3A,36%
 221001001193,Nikita Chanda,BCS 3A,72%
-221001001033,Priyanka Kundu,BCS 3A,12%
+221001001033,Priyanka Kundu,BCS 3A,22%
 221001001149,Ranit Saha,BCS 3A,92%
 221001001116,Rima Paul,BCS 3A,76%
 221001001125,Samata Samanta,BCS 3A,64%
@@ -23,7 +23,7 @@ Student_ID,Name,Batch,Overall Percentage
 221001001043,Shreya Guin,BCS 3A,4%
 231001011009,Shubhodeep Ghosh,BCS 3A,4%
 221001001174,Sneha Ghosh,BCS 3A,88%
-221001001058,Sneha Saha,BCS 3A,4%
+221001001058,Sneha Saha,BCS 3A,24%
 221001001034,Soham Ghosh,BCS 3A,44%
 221001001187,Soumodipta Sen,BCS 3A,52%
 221001001197,Souradip Ghosh,BCS 3A,4%
@@ -42,7 +42,7 @@ Student_ID,Name,Batch,Overall Percentage
 221001001348,Nilay Biswas,BCS 3B,4%
 221001001268,Nitish Kumar Verma,BCS 3B,72%
 221001001321,Piyush Ravi Srivastava,BCS 3B,12%
-221001001262,Pralay Ghosh,BCS 3B,16%
+221001001262,Pralay Ghosh,BCS 3B,26%
 221001001263,Pranav Raj Wardhan,BCS 3B,76%
 221001001275,Ramit Bid,BCS 3B,88%
 221001001234,Ritu Raj,BCS 3B,72%
@@ -54,11 +54,11 @@ Student_ID,Name,Batch,Overall Percentage
 221001001136,Udayan Majumder,BCS 3B,4%
 221001001351,Udayangshu Mandal,BCS 3B,96%
 221001001012,Ananya Laha,BCS 3C,52%
-221001001015,Anirban Ghosh(Cr),BCS 3C,56%
+221001001015,Anirban Ghosh,BCS 3C,56%
 221001001412,Anwesha Banerjee,BCS 3C,88%
 231001011031,Arkajeet Nag,BCS 3C,40%
 221001001111,Dipanjana Pal,BCS 3C,84%
-221001001096,Dipmita Saha,BCS 3C,16%
+221001001096,Dipmita Saha,BCS 3C,26%
 221001001054,Dona Mondal,BCS 3C,64%
 221001001237,Dwaipayan Goswami,BCS 3C,80%
 221001001008,Ipsita Saha,BCS 3C,4%
@@ -93,13 +93,13 @@ Student_ID,Name,Batch,Overall Percentage
 231001011013,Rahul Mahato,BCS 3D,4%
 221001001391,Ritik Kumar Jha,BCS 3D,48%
 221001001277,Riya Das,BCS 3D,92%
-221001001247,Saheli Mondal,BCS 3D,16%
+221001001247,Saheli Mondal,BCS 3D,26%
 221001001266,Sarbajit Nath,BCS 3D,68%
 221001001372,Saroni Ghosh,BCS 3D,92%
 221001001304,Shibam Chakraborty,BCS 3D,4%
 221001001363,Sneha Raj,BCS 3D,44%
 221001001354,Souvik Khatua,BCS 3D,4%
-221001001309,Subhradwip Siddhanta,BCS 3D,16%
+221001001309,Subhradwip Siddhanta,BCS 3D,26%
 221001001357,Suchismita Das,BCS 3D,36%
 231001011016,Sujeet Yadav,BCS 3D,68%
 221001001367,Sumit Singh,BCS 3D,44%
@@ -134,7 +134,7 @@ Student_ID,Name,Batch,Overall Percentage
 221001020002,Poumita Ghosh,CSBS3,44%
 231001038001,Prathna Kiran,CSBS3,20%
 221001020027,Pratiksha Kumari,CSBS3,36%
-221001020047,Prianshu Mukherjee,CSBS3,12%
+221001020047,Prianshu Mukherjee,CSBS3,22%
 221001020051,Priyanshu Shekhar,CSBS3,44%
 221001020023,Richa Jha,CSBS3,20%
 221001020068,Sahil Kumar Yadav,CSBS3,4%
@@ -213,7 +213,7 @@ Student_ID,Name,Batch,Overall Percentage
 221003003099,Tanish Maity,CSE AI 3B,24%
 231003004037,Ariyan Hoque,CSE AI 3C,8%
 221003003019,Somen Jana,CSE AI 3C,4%
-241001271017,Agamani Banerjee,MCA 1A,16%
+241001271017,Agamani Banerjee,MCA 1A,26%
 241001271175,Abhishek Sharma,MCA 1A,20%
 241001271208,Aleek Poddar,MCA 1A,48%
 241001271165,Ananya Koley,MCA 1A,4%
@@ -352,3 +352,7 @@ Student_ID,Name,Batch,Overall Percentage
 231001271231,Surabhi Mondal,MCA 2C,72%
 231001271177,Suruchi Mahato,MCA 2C,56%
 231001271186,Tanima Dey,MCA 2C,20%
+211001091002,Omdeep Roy Chowdhury,MCA 1B,21%
+241001271092,Saptarshi Chowdhury,MCA 1B,21%
+241001271011,Sayon Mondal,MCA 2A,21%
+221003003064,Prerna Shaw,CSE AI 3B,21%

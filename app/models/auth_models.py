@@ -1,12 +1,20 @@
 from typing import List,Optional
 from pydantic import BaseModel,EmailStr
-from datetime import date
+from datetime import date, datetime
 
 class UserRegisterRequest(BaseModel):
     name: str
     email: EmailStr
     password: str
+    college_id: str  
+    phone_no: str
+    whatsapp_no: str
+
+class StudentIdRequest(BaseModel):
     college_id: str
+    name: Optional[str] = None
+    email: Optional[str] = None
+    password: Optional[str] = None
 
 class UserLoginRequest(BaseModel):
     email : EmailStr
@@ -47,3 +55,17 @@ class TeamRegister(BaseModel):
     created_by_id: str
     existing_members: List[ExistingMember]
     new_member: Optional[NewMember] = None
+
+# Sponsor Models
+class SponsorResponse(BaseModel):
+    sponsor_name: str
+    selling_domain: str
+    given_amount: Optional[int]
+    goods_services: Optional[str]
+    contribution_type: str
+
+class GalleryResponse(BaseModel):
+    description: str
+    event_id: str
+    class Config:
+        from_attributes = True

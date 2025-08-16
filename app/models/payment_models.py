@@ -1,14 +1,17 @@
-from sqlalchemy import Column, String, DateTime, ForeignKey
+from sqlalchemy import Column, String, DateTime, Float
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.sql import func
 
 Base = declarative_base()
 
 class Payment(Base):
     __tablename__ = "payments"
-    
-    transaction_id = Column(String(255), primary_key=True, nullable=False)
-    utr_no = Column(String(255), nullable=True)
-    bank_name = Column(String(255), nullable=True)
-    upi_id = Column(String(255), nullable=True)
-    paid_at = Column(DateTime, nullable=True, server_default=func.current_timestamp())
+
+    transaction_id = Column(String, primary_key=True,unique=True, nullable=False)
+    utr_no = Column(String, nullable=False)
+    bank_name = Column(String, nullable=False)
+    upi_id = Column(String, nullable=False)
+    payment_mode = Column(String, nullable=False)  # ✅ new
+    amount = Column(Float, nullable=False)  # ✅ new
+    description = Column(String)  # ✅ new
+    status = Column(String, default="PENDING")
+    paid_at = Column(DateTime)

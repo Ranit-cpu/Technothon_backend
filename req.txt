@@ -1,6 +1,6 @@
 fastapi
 uvicorn
-pydantic
+pydantic[email]
 mysql-connector-python
 python-multipart
 werkzeug
@@ -9,3 +9,6 @@ python-dotenv
 aiomysql
 jinja2
 aiosqlite
+itsdangerous
+greenlet
+cryptography

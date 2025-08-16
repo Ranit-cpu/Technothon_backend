@@ -4,11 +4,9 @@ from sqlalchemy.future import select
 from app.models.participant_models import Participant
 from app.models.Users_models import User
 from app.database import get_sql_session
-from starlette.templating import Jinja2Templates
 from app.models.team_models import Team
 
 router = APIRouter()
-templates = Jinja2Templates(directory="app/templates")
 
 @router.get("/dashboard")
 async def dashboard(request: Request, db: AsyncSession = Depends(get_sql_session)):
@@ -36,9 +34,8 @@ async def dashboard(request: Request, db: AsyncSession = Depends(get_sql_session
         )
         team = team_result.scalar_one_or_none()
 
-    return templates.TemplateResponse("dashboard.html", {
-        "request": request,
-        "user": user,
-        "team": team,
-        "participant": participant
-    })
+    return {
+        "user": user.__dict__ if user else None,
+        "team": team.__dict__ if team else None
+    }
+    

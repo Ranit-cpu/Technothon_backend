@@ -1,12 +1,10 @@
-from fastapi import APIRouter, Request, Form, Depends, HTTPException
+from fastapi import APIRouter, Request, Depends, HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy import func
 from starlette.templating import Jinja2Templates
-from starlette.requests import Request
 from datetime import datetime
-import random
 
 from app.database import get_sql_session
 from app.models.Users_models import User
@@ -21,20 +19,17 @@ templates = Jinja2Templates(directory="app/templates")
 async def generate_team_id(event_id: str, db: AsyncSession) -> str:
     prefix = 'AI' if event_id == 'TT01' else 'IE'
 
-    # Extract the max numeric part of existing IDs with the prefix
     stmt = select(func.max(Team.tid)).where(Team.tid.like(f"{prefix}%"))
     result = await db.execute(stmt)
     max_tid = result.scalar_one_or_none()
 
     if max_tid:
-        # Extract numeric part and increment
         last_number = int(max_tid.replace(prefix, ""))
         next_number = last_number + 1
     else:
         next_number = 1
 
-    new_tid = f"{prefix}{next_number:03d}"  # Pads with zeros to ensure 3-digit format
-    return new_tid
+    return f"{prefix}{next_number:03d}"
 
 
 # Generate custom participant ID
@@ -50,76 +45,62 @@ async def render_team_register_form(request: Request, db: AsyncSession = Depends
     if not user_id:
         raise HTTPException(status_code=403, detail="Unauthorized access")
 
-    # Get current user's information
     current_user_result = await db.execute(select(User).where(User.uid == user_id))
     current_user = current_user_result.scalar_one_or_none()
-    
+
     if not current_user:
         raise HTTPException(status_code=404, detail="Current user not found")
-    
-    # Check if user is already part of a team for this event
+
     existing_participant = await db.execute(
         select(Participant).where(
             Participant.user_id == user_id,
-            Participant.event_id == "TT01"  # You might want to make this dynamic
+            Participant.event_id == "TT01"
         )
     )
     existing_participant = existing_participant.scalar_one_or_none()
-    
+
     if existing_participant:
         raise HTTPException(status_code=400, detail="You are already part of a team for this event")
-    
+
     return templates.TemplateResponse("team_register.html", {
         "request": request,
         "user_id": user_id,
-        "user_name": current_user.Name  # Pass user name to template
+        "user_name": current_user.Name
     })
 
 
 @router.post("/team/register")
 async def submit_team_register(request: Request, db: AsyncSession = Depends(get_sql_session)):
-    # Get current user from session
-    current_user_id = request.session.get("user_id")
-    if not current_user_id:
+    user_id = request.session.get("user_id")
+    if not user_id:
         raise HTTPException(status_code=403, detail="Unauthorized access")
-    
-    data = await request.json()
 
+    data = await request.json()
     team_name = data.get("team_name")
     idea_title = data.get("idea_title")
     idea_description = data.get("idea_description")
-    event_id = data.get("event_id", "TT01")  # Default to TT01
+    event_id = data.get("event_id", "TT01")
     existing_members = data.get("existing_members", [])
     created_by_id = data.get("created_by_id")
 
-    # Verify that the created_by_id matches session user
-    if created_by_id != current_user_id:
+    if created_by_id != user_id:
         return JSONResponse(
             status_code=403,
             content={"detail": "Unauthorized: You can only create teams as yourself."}
         )
 
-    # Ensure creator is included with their specified role
-    creator_found = False
-    for member in existing_members:
-        if member.get("uid") == created_by_id:
-            creator_found = True
-            break
-    
-    if not creator_found:
+    if not any(m["uid"] == created_by_id for m in existing_members):
         return JSONResponse(
             status_code=400,
             content={"detail": "Team creator must be included in the member list."}
         )
 
-    # Validate number of members
     if len(existing_members) < 5 or len(existing_members) > 6:
         return JSONResponse(
             status_code=400,
             content={"detail": "Team must have between 5 and 6 members."}
         )
 
-    # Check for duplicate UIDs
     uids = [m["uid"] for m in existing_members]
     if len(set(uids)) != len(uids):
         return JSONResponse(
@@ -127,7 +108,6 @@ async def submit_team_register(request: Request, db: AsyncSession = Depends(get_
             content={"detail": "Duplicate UIDs found in the team."}
         )
 
-    # Validate users exist in the User table
     result = await db.execute(select(User.uid).where(User.uid.in_(uids)))
     valid_uids = {row[0] for row in result.fetchall()}
     missing_uids = set(uids) - valid_uids
@@ -137,7 +117,6 @@ async def submit_team_register(request: Request, db: AsyncSession = Depends(get_
             content={"detail": f"UID(s) not found in User table: {', '.join(missing_uids)}"}
         )
 
-    # Check if any UID is already part of this event
     for uid in uids:
         dup = await db.execute(
             select(Participant).where(
@@ -154,7 +133,6 @@ async def submit_team_register(request: Request, db: AsyncSession = Depends(get_
             )
 
     try:
-        # Generate team ID
         team_id = await generate_team_id(event_id, db)
         team = Team(
             tid=team_id,
@@ -162,21 +140,22 @@ async def submit_team_register(request: Request, db: AsyncSession = Depends(get_
             idea_title=idea_title,
             idea_description=idea_description,
             event_id=event_id,
-            created_by=None,  # Will be set after participant creation
+            created_by=None,
             created_at=datetime.utcnow()
         )
         db.add(team)
         await db.flush()
 
-        # Create Participant entries
+        created_by_pid = None  # ✅ FIXED: define before loop
+
         for m in existing_members:
             uid = m["uid"]
-            role = m.get("role", "Member")  # Use provided role or default to Member
+            role = m.get("role", "Member")
 
             user_result = await db.execute(select(User).where(User.uid == uid))
             user = user_result.scalar_one_or_none()
             if not user:
-                continue  # This should never happen due to earlier validation
+                continue
 
             pid = await generate_participant_id(db)
             participant = Participant(
@@ -201,7 +180,6 @@ async def submit_team_register(request: Request, db: AsyncSession = Depends(get_
                 content={"detail": "Creator's participant entry was not created properly."}
             )
 
-        # Set created_by and commit
         team.created_by = created_by_pid
         db.add(team)
         await db.commit()
@@ -210,7 +188,7 @@ async def submit_team_register(request: Request, db: AsyncSession = Depends(get_
             "message": "Team registered successfully",
             "team_id": team.tid
         }
-    
+
     except Exception as e:
         await db.rollback()
         return JSONResponse(
@@ -221,21 +199,23 @@ async def submit_team_register(request: Request, db: AsyncSession = Depends(get_
 
 @router.get("/search-user")
 async def search_user(uid: str, db: AsyncSession = Depends(get_sql_session)):
-    # Search by UID prefix or name
     result = await db.execute(
         select(User).where(
             (User.uid.like(f"{uid}%")) | (User.Name.ilike(f"%{uid}%"))
-        ).limit(10)  # Limit results to prevent too many matches
+        ).limit(10)
     )
     users = result.scalars().all()
-    
-    # Convert to list of dictionaries for JSON response
-    user_list = []
-    for user in users:
-        user_list.append({
-            "uid": user.uid,
-            "Name": user.Name,
-            "email": user.email
-        })
-    
-    return user_list
+
+    return [{
+        "uid": user.uid,
+        "Name": user.Name,
+        "email": user.email
+    } for user in users]
+
+
+@router.get("/me")
+async def get_logged_in_user(request: Request):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    return {"user_id": user_id}

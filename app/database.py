@@ -9,7 +9,7 @@ DATABASE_URL_SQL = os.getenv("DATABASE_URL_SQL")
 
 #SQL Database initialization
 if not DATABASE_URL_SQL:
-    DATABASE_URL_SQL = "mysql+aiomysql://root:12345@localhost:3306/technothondb"
+   DATABASE_URL_SQL = "mysql+aiomysql://Ranit:12345@localhost/TechnothonDB"
 
 engine_mysql = create_async_engine(DATABASE_URL_SQL, echo=True)
 AsyncSessionMySQL = sessionmaker(

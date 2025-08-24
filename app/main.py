@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.sessions import SessionMiddleware
 from starlette.staticfiles import StaticFiles
@@ -15,9 +15,8 @@ import os
 
 app = FastAPI()
 origins = [
-   "http://technothontiu.com:5173",  # Your current frontend (likely Vite dev server)
-    "http://technothontiu.com",      # Add this - the origin from your error
-    "http://technothontiu.com:3000",
+   "http://localhost:5173",  # Your current frontend (likely Vite dev server)
+    "http://localhost:3000",
 ]
 
 # Add CORS middleware
@@ -52,5 +51,5 @@ templates = Jinja2Templates(directory="app/templates")
 
 
 @app.get("/")       #Read
-def root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+def root():
+    return "Backend running successfully"

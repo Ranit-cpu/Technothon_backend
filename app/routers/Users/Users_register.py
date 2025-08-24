@@ -84,6 +84,7 @@ async def handle_user_register(data: UserRegisterRequest, request: Request, db_s
 
     return {"status": "success", "message": "Registration successful", "redirect": "/login"}
 
+
 async def generate_custom_id(db: AsyncSession) -> str:
     result = await db.execute(select(User).order_by(User.uid.desc()).limit(1))
     last_user = result.scalar_one_or_none()

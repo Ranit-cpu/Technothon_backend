@@ -6,27 +6,37 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from app.database import get_sql_session
 from app.models.Users_models import User
 from app.utils.jwt_handler import create_access_token, verify_access_token
+from app.models.auth_models import UserLoginRequest
 
 router = APIRouter()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="User_login")
 
-
 @router.post("/User_login")
-async def login_user(
-    form_data: OAuth2PasswordRequestForm = Depends(),
-    db: AsyncSession = Depends(get_sql_session)
-):
-    result = await db.execute(select(User).where(User.email == form_data.username))
+async def login_user(request: Request, db: AsyncSession = Depends(get_sql_session)):
+    data = await request.json()
+    email = data.get("email")
+    password = data.get("password")
+
+    result = await db.execute(select(User).where(User.email == email))
     user = result.scalar_one_or_none()
 
-    if user is None or not check_password_hash(user.password, form_data.password):
+    if user is None or not check_password_hash(user.password, password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    # create JWT with user UID
-    access_token = create_access_token(data={"sub": str(user.uid), "email": user.email})
+    # store user id in session
+    request.session["user_id"] = user.uid
 
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {
+        "success": True,
+        "message": "Login successful",
+        "user": {
+            "uid": user.uid,
+            "name": user.Name,
+            "email": user.email
+        }
+    }
+
 
 
 # Helper to extract current user id from token
@@ -41,14 +51,26 @@ async def get_current_user_id(token: str = Depends(oauth2_scheme)):
 
 
 @router.get("/me")
-async def get_current_user(
-    db: AsyncSession = Depends(get_sql_session),
-    user_id: str = Depends(get_current_user_id)
-):
+async def get_me(request: Request, db: AsyncSession = Depends(get_sql_session)):
+    user_id = request.session.get("user_id")
+    if not user_id:
+        raise HTTPException(status_code=401, detail="Not logged in")
+
     result = await db.execute(select(User).where(User.uid == user_id))
     user = result.scalar_one_or_none()
-
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
-    return {"uid": user.uid, "name": user.Name, "email": user.email}
+    return {
+        "id": user.uid,
+        "name": user.Name,
+        "email": user.email,
+        "batch": user.Batch,
+        "phone_no": user.Phone_No,
+        "whatsapp_no": user.Whatsapp_No,
+        "overall_percentage": user.Overall_Percentage,
+        "student_id": user.Student_ID,
+        "created_at": user.created_at
+    }
+
+

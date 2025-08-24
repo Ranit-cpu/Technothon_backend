@@ -9,6 +9,7 @@ from app.routers.teams import team_register
 from app.routers.events import admin_event
 from app.routers.payments import payment_route
 from app.routers.sponsors import sponsors
+from app.routers.gallery import gallery
 
 import os
 
@@ -39,22 +40,17 @@ app.include_router(admin_event.router, tags=["Admin Events"])
 app.include_router(team_register.router, tags=["Team Registration"])
 app.include_router(payment_route.router, tags=["Payment"])
 app.include_router(sponsors.router, tags=["Sponsors"])
+app.include_router(gallery.router, tags=["Gallery"])
+
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+if not os.path.exists("uploads"):
+    os.makedirs("uploads")
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
+
 templates = Jinja2Templates(directory="app/templates")
+
 
 @app.get("/")       #Read
 def root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
-
-# async def init_mysql_db():
-#     async with engine_mysql.begin() as conn:
-#         await conn.run_sync(Base.metadata.create_all)
-#
-# async def init_sqlite_db():
-#     async with engine_sqlite.begin() as conn:
-#         await conn.run_sync(Base.metadata.create_all)
-#
-# @app.on_event("startup")
-# async def on_startup():
-#     await init_mysql_db()
-#     await init_sqlite_db()

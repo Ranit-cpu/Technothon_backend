@@ -1,8 +1,6 @@
 from fastapi import APIRouter, HTTPException, Depends, Request, File, UploadFile
-from fastapi.responses import HTMLResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-from starlette.templating import Jinja2Templates
 from datetime import datetime
 from typing import Optional
 

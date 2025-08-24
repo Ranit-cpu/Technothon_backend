@@ -1,10 +1,17 @@
-from fastapi import APIRouter, HTTPException, Depends, Request, File, UploadFile, Form
-from fastapi.responses import JSONResponse
+from fastapi import APIRouter
+import os
 
-from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.future import select
-from datetime import datetime
+router = APIRouter()
 
-from app.models.gallery_models import Gallery
-from app.models.event_models import Event
-from app.database import get_sql_session
+GALLERY_DIR = "uploads/gallery"
+
+@router.get("/gallery")
+def get_gallery_images():
+    files = []
+    if os.path.exists(GALLERY_DIR):
+        for idx, filename in enumerate(os.listdir(GALLERY_DIR), start=1):
+            files.append({
+                "id": idx,
+                "image": f"/uploads/gallery/{filename}"
+            })
+    return {"gallery": files}

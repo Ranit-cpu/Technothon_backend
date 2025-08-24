@@ -12,3 +12,5 @@ aiosqlite
 itsdangerous
 greenlet
 cryptography
+passlib
+python-jose

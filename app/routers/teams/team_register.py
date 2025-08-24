@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request, Depends, HTTPException
+from fastapi import APIRouter, Request, Depends, HTTPException, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
@@ -10,6 +10,7 @@ from app.database import get_sql_session
 from app.models.Users_models import User
 from app.models.team_models import Team
 from app.models.participant_models import Participant
+from app.routers.Users.Users_login import get_current_user_id  # ✅ reuse login dependency
 
 router = APIRouter()
 templates = Jinja2Templates(directory="app/templates")
@@ -18,17 +19,14 @@ templates = Jinja2Templates(directory="app/templates")
 # Generate custom team ID based on event
 async def generate_team_id(event_id: str, db: AsyncSession) -> str:
     prefix = 'AI' if event_id == 'TT01' else 'IE'
-
     stmt = select(func.max(Team.tid)).where(Team.tid.like(f"{prefix}%"))
     result = await db.execute(stmt)
     max_tid = result.scalar_one_or_none()
-
     if max_tid:
         last_number = int(max_tid.replace(prefix, ""))
         next_number = last_number + 1
     else:
         next_number = 1
-
     return f"{prefix}{next_number:03d}"
 
 
@@ -40,14 +38,13 @@ async def generate_participant_id(db: AsyncSession):
 
 
 @router.get("/team/register")
-async def render_team_register_form(request: Request, db: AsyncSession = Depends(get_sql_session)):
-    user_id = request.session.get("user_id")
-    if not user_id:
-        raise HTTPException(status_code=403, detail="Unauthorized access")
-
+async def render_team_register_form(
+    request: Request,
+    db: AsyncSession = Depends(get_sql_session),
+    user_id: str = Depends(get_current_user_id)
+):
     current_user_result = await db.execute(select(User).where(User.uid == user_id))
     current_user = current_user_result.scalar_one_or_none()
-
     if not current_user:
         raise HTTPException(status_code=404, detail="Current user not found")
 
@@ -58,7 +55,6 @@ async def render_team_register_form(request: Request, db: AsyncSession = Depends
         )
     )
     existing_participant = existing_participant.scalar_one_or_none()
-
     if existing_participant:
         raise HTTPException(status_code=400, detail="You are already part of a team for this event")
 
@@ -70,11 +66,11 @@ async def render_team_register_form(request: Request, db: AsyncSession = Depends
 
 
 @router.post("/team/register")
-async def submit_team_register(request: Request, db: AsyncSession = Depends(get_sql_session)):
-    user_id = request.session.get("user_id")
-    if not user_id:
-        raise HTTPException(status_code=403, detail="Unauthorized access")
-
+async def submit_team_register(
+    request: Request,
+    db: AsyncSession = Depends(get_sql_session),
+    user_id: str = Depends(get_current_user_id)
+):
     data = await request.json()
     team_name = data.get("team_name")
     idea_title = data.get("idea_title")
@@ -146,8 +142,7 @@ async def submit_team_register(request: Request, db: AsyncSession = Depends(get_
         db.add(team)
         await db.flush()
 
-        created_by_pid = None  # ✅ FIXED: define before loop
-
+        created_by_pid = None
         for m in existing_members:
             uid = m["uid"]
             role = m.get("role", "Member")
@@ -184,10 +179,7 @@ async def submit_team_register(request: Request, db: AsyncSession = Depends(get_
         db.add(team)
         await db.commit()
 
-        return {
-            "message": "Team registered successfully",
-            "team_id": team.tid
-        }
+        return {"message": "Team registered successfully", "team_id": team.tid}
 
     except Exception as e:
         await db.rollback()
@@ -195,27 +187,3 @@ async def submit_team_register(request: Request, db: AsyncSession = Depends(get_
             status_code=500,
             content={"detail": f"Registration failed: {str(e)}"}
         )
-
-
-@router.get("/search-user")
-async def search_user(uid: str, db: AsyncSession = Depends(get_sql_session)):
-    result = await db.execute(
-        select(User).where(
-            (User.uid.like(f"{uid}%")) | (User.Name.ilike(f"%{uid}%"))
-        ).limit(10)
-    )
-    users = result.scalars().all()
-
-    return [{
-        "uid": user.uid,
-        "Name": user.Name,
-        "email": user.email
-    } for user in users]
-
-
-@router.get("/me")
-async def get_logged_in_user(request: Request):
-    user_id = request.session.get("user_id")
-    if not user_id:
-        raise HTTPException(status_code=401, detail="Not authenticated")
-    return {"user_id": user_id}

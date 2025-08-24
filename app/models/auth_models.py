@@ -63,7 +63,9 @@ class SponsorResponse(BaseModel):
     given_amount: Optional[int]
     goods_services: Optional[str]
     contribution_type: str
-
+class BasicSponsorResponse(BaseModel):
+    sponsor_name: str
+    sponsor_logo: str
 class GalleryResponse(BaseModel):
     description: str
     event_id: str

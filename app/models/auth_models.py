@@ -1,6 +1,6 @@
-from typing import List,Optional
+from typing import List,Optional,Union
 from pydantic import BaseModel,EmailStr
-from datetime import date, datetime
+from datetime import date
 
 class UserRegisterRequest(BaseModel):
     name: str
@@ -36,7 +36,7 @@ class EventIn(BaseModel):
     start_date: date
     end_date: date
     prize_details: str
-    is_live: int
+    is_live: Union[int, bool]
 
 class ExistingMember(BaseModel):
     uid: str
@@ -71,3 +71,30 @@ class GalleryResponse(BaseModel):
     event_id: str
     class Config:
         from_attributes = True
+
+class CouponRequest(BaseModel):
+    food_preference: str
+
+class CouponResponse(BaseModel):
+    coupon_id: str
+    pid: str
+    food_preference: str
+    flag: int
+
+# New scan models
+class ScanRequest(BaseModel):
+    coupon_data: str  # JSON string from QR code
+
+class ScanResponse(BaseModel):
+    success: bool
+    message: str
+    pid: Optional[str] = None
+    coupon_id: Optional[str] = None
+    food_preference: Optional[str] = None
+
+# Additional response model for coupon status check
+class CouponStatusResponse(BaseModel):
+    has_active_coupon: bool
+    coupon_id: Optional[str] = None
+    food_preference: Optional[str] = None
+    message: Optional[str] = None

@@ -1,7 +1,6 @@
 # app/services/event_service.py
 from fastapi import HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import Session
 from app.models.event_models import Event
 from app.models.auth_models import EventIn
 from sqlalchemy import func

@@ -6,16 +6,17 @@ from starlette.templating import Jinja2Templates
 from app.routers.Users import Users_register,Users_login,Users_dashboard
 from app.routers.admin import alogin,admin_dashboard
 from app.routers.teams import team_register
-from app.routers.events import admin_event
+from app.routers.events import admin_event,user_event
 from app.routers.payments import payment_route
 from app.routers.sponsors import sponsors
 from app.routers.gallery import gallery
+from app.routers.food import food_coupon
 
 import os
 
 app = FastAPI()
 origins = [
-   "http://localhost:5173",  # Your current frontend (likely Vite dev server)
+   "http://localhost:5173",
     "http://localhost:3000",
 ]
 
@@ -40,6 +41,8 @@ app.include_router(team_register.router, tags=["Team Registration"])
 app.include_router(payment_route.router, tags=["Payment"])
 app.include_router(sponsors.router, tags=["Sponsors"])
 app.include_router(gallery.router, tags=["Gallery"])
+app.include_router(user_event.router, tags=["User event"])
+app.include_router(food_coupon.router,tags=["Food Coupons"])
 
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 

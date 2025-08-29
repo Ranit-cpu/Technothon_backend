@@ -39,7 +39,7 @@ async def login_user(request: Request, db: AsyncSession = Depends(get_sql_sessio
 
 
 
-# Helper to extract current user id from token
+#Helper to extract current user id from token
 async def get_current_user_id(token: str = Depends(oauth2_scheme)):
     payload = verify_access_token(token)
     if not payload:
@@ -51,26 +51,33 @@ async def get_current_user_id(token: str = Depends(oauth2_scheme)):
 
 
 @router.get("/me")
-async def get_me(request: Request, db: AsyncSession = Depends(get_sql_session)):
+async def get_current_user(
+    request: Request,
+    db: AsyncSession = Depends(get_sql_session)
+):
     user_id = request.session.get("user_id")
+
     if not user_id:
-        raise HTTPException(status_code=401, detail="Not logged in")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Not logged in"
+        )
 
     result = await db.execute(select(User).where(User.uid == user_id))
-    user = result.scalar_one_or_none()
+    user = result.scalars().first()
+
     if not user:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
 
     return {
         "id": user.uid,
         "name": user.Name,
         "email": user.email,
-        "batch": user.Batch,
-        "phone_no": user.Phone_No,
-        "whatsapp_no": user.Whatsapp_No,
-        "overall_percentage": user.Overall_Percentage,
-        "student_id": user.Student_ID,
-        "created_at": user.created_at
+        "attendance": {
+            "present": user.Overall_Percentage or 0,
+            "total": 100
+        }
     }
-
-

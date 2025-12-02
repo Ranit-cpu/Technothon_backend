@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Payment | Technothon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(to top right, #05001f, #1c023f);
+      color: white;
+      min-height: 100vh;
+    }
+
+    header {
+      padding: 20px 40px;
+      background: rgba(255, 255, 255, 0.05);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #ffffff;
+    }
+
+    nav a {
+      color: #ff4c4c;
+      text-decoration: none;
+      font-weight: bold;
+      font-size: 1rem;
+      transition: color 0.3s ease;
+      margin-left: 20px;
+    }
+
+    nav a:hover {
+      color: #ff7b7b;
+    }
+
+    .back-link {
+      color: #8f94fb !important;
+    }
+
+    main {
+      padding: 50px 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+      color: #f0f0f0;
+      text-align: center;
+    }
+
+    .payment-container {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    .team-info {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+
+    .team-info h3 {
+      color: #8f94fb;
+      margin-bottom: 10px;
+    }
+
+    .qr-container {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      display: inline-block;
+      margin: 30px 0;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .qr-container img {
+      width: 300px;
+      height: 300px;
+      display: block;
+    }
+
+    .payment-info {
+      color: #ccc;
+      margin: 20px 0;
+      font-size: 0.9rem;
+    }
+
+    .payment-form {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 25px;
+      border-radius: 10px;
+      margin-top: 30px;
+      text-align: left;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #8f94fb;
+      font-weight: bold;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      box-sizing: border-box;
+      background: rgba(255, 255, 255, 0.9);
+      color: #333;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px #8f94fb;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 15px;
+      background-color: #8f94fb;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      opacity: 0.5;
+    }
+
+    .submit-btn:enabled {
+      opacity: 1;
+    }
+
+    .submit-btn:enabled:hover {
+      background-color: #6c70e8;
+      transform: translateY(-2px);
+    }
+
+    .submit-btn:disabled {
+      cursor: not-allowed;
+    }
+
+    .loading {
+      opacity: 0.7;
+      cursor: wait;
+    }
+
+    .error-message {
+      background: rgba(255, 76, 76, 0.2);
+      color: #ff7b7b;
+      padding: 10px;
+      border-radius: 6px;
+      margin-bottom: 20px;
+      border: 1px solid #ff4c4c;
+    }
+
+    .amount-info {
+      background: rgba(143, 148, 251, 0.2);
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      border: 1px solid #8f94fb;
+    }
+
+    .amount-info h4 {
+      margin: 0 0 10px 0;
+      color: #8f94fb;
+    }
+
+    .amount {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">Technothon</div>
+    <nav>
+      <a href="/dashboard" class="back-link">← Back to Dashboard</a>
+      <a href="/logout">Logout</a>
+    </nav>
+  </header>
+
+  <main>
+    <h1>Team Payment</h1>
+
+    <div class="payment-container">
+      <div class="team-info">
+        <h3>Team: {{ team.name }}</h3>
+        <p><strong>Team ID:</strong> {{ team.tid }}</p>
+        <p><strong>Idea:</strong> {{ team.idea_title }}</p>
+      </div>
+
+      <div class="amount-info">
+        <h4>Registration Fee</h4>
+        <div class="amount">₹500</div>
+      </div>
+
+      <div class="qr-container">
+        <img src="data:image/png;base64,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" alt="Payment QR Code">
+      </div>
+
+      <div class="payment-info">
+        <p><strong>UPI ID:</strong> 9331741136@ybl</p>
+        <p>Scan the QR code above with any UPI app to make the payment</p>
+        <p>After payment, please fill in the details below</p>
+      </div>
+
+      <form class="payment-form" id="paymentForm">
+        <div id="errorMessage" class="error-message" style="display: none;"></div>
+        
+        <div class="form-group">
+          <label for="transaction_id">Transaction ID *</label>
+          <input type="text" id="transaction_id" name="transaction_id" required placeholder="Enter transaction ID from payment app">
+        </div>
+
+        <div class="form-group">
+          <label for="utr_no">UTR Number *</label>
+          <input type="text" id="utr_no" name="utr_no" required placeholder="Enter UTR number">
+        </div>
+
+        <div class="form-group">
+          <label for="bank_name">Bank Name *</label>
+          <input type="text" id="bank_name" name="bank_name" required placeholder="Enter your bank name">
+        </div>
+
+        <div class="form-group">
+          <label for="upi_id">UPI ID *</label>
+          <input type="text" id="upi_id" name="upi_id" required placeholder="Enter your UPI ID (e.g., yourname@paytm)">
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn" disabled>
+          Submit Payment Details
+        </button>
+      </form>
+    </div>
+  </main>
+
+  <script>
+    const form = document.getElementById('paymentForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const errorMessage = document.getElementById('errorMessage');
+    const inputs = form.querySelectorAll('input[required]');
+
+    // Function to check if all required fields are filled
+    function checkFormValidity() {
+      let allFilled = true;
+      inputs.forEach(input => {
+        if (!input.value.trim()) {
+          allFilled = false;
+        }
+      });
+      
+      submitBtn.disabled = !allFilled;
+    }
+
+    // Add event listeners to all required inputs
+    inputs.forEach(input => {
+      input.addEventListener('input', checkFormValidity);
+      input.addEventListener('change', checkFormValidity);
+    });
+
+    // Handle form submission
+    form.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      // Hide error message
+      errorMessage.style.display = 'none';
+      
+      // Disable submit button and show loading state
+      submitBtn.disabled = true;
+      submitBtn.classList.add('loading');
+      submitBtn.textContent = 'Submitting...';
+      
+      // Collect form data
+      const formData = {
+        transaction_id: document.getElementById('transaction_id').value.trim(),
+        utr_no: document.getElementById('utr_no').value.trim(),
+        bank_name: document.getElementById('bank_name').value.trim(),
+        upi_id: document.getElementById('upi_id').value.trim()
+      };
+      
+      try {
+        const response = await fetch('/payment/submit', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(formData)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+          alert('Payment details submitted successfully!');
+          window.location.href = '/dashboard';
+        } else {
+          throw new Error(result.detail || 'Payment submission failed');
+        }
+        
+      } catch (error) {
+        console.error('Payment submission error:', error);
+        errorMessage.textContent = error.message;
+        errorMessage.style.display = 'block';
+        
+        // Re-enable form
+        submitBtn.disabled = false;
+        submitBtn.classList.remove('loading');
+        submitBtn.textContent = 'Submit Payment Details';
+        checkFormValidity();
+      }
+    });
+
+    // Initial form validation check
+    checkFormValidity();
+  </script>
+</body>
+</html>

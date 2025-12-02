@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Technothon Register</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to top right, #05001f, #1c023f);
+      color: #333;
+    }
+
+    header {
+      padding: 20px;
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #aaa;
+    }
+
+    .nav-container .logo {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    nav a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: #aaa;
+      padding: 10px 20px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .auth-links a {
+      color: #aaa;
+      text-decoration: none;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      margin-top: 50px;
+    }
+
+    .card {
+      display: flex;
+      background: #fff;
+      border-radius: 4px;
+      overflow: hidden;
+      width: 800px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-image {
+      background: #ddd;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .card-form {
+      flex: 1;
+      padding: 40px;
+    }
+
+    .card-form h1 {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .card-form p {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    form label {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    form input {
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    form button {
+      background: linear-gradient(to right, #4e54c8, #8f94fb);
+      color: white;
+      padding: 12px;
+      border: none;
+      margin-top: 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .divider {
+      text-align: center;
+      margin: 20px 0;
+      color: #888;
+    }
+
+    .social-buttons {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .social-buttons button {
+      flex: 1;
+      padding: 10px;
+      margin: 0 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #f8f8f8;
+      cursor: pointer;
+    }
+
+    .signin-text {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .signin-text a {
+      color: #4e54c8;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    #strengthMessage {
+      margin-top: 5px;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+
+    .weak {
+      color: red;
+    }
+
+    .medium {
+      color: orange;
+    }
+
+    .strong {
+      color: green;
+    }
+
+    #studentIdMessage {
+      margin-top: 5px;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+
+    .error {
+      color: red;
+    }
+
+    .success {
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-container">
+      <div class="logo">Technothon</div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="#">About</a>
+        <a href="#">Events</a>
+        <a href="#">Contact Us</a>
+      </nav>
+      <div class="auth-links">
+        <a href="signup.html">Login / Register</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <div class="card-image">
+        <img src="https://via.placeholder.com/300x400?text=Image" alt="Tech image"/>
+      </div>
+      <div class="card-form">
+        <h1>TECHNOTHON</h1>
+        <p>Gear up for Technothon 2025 —<br>where ideas spark and possibilities are limitless</p>
+        <form id="registerForm">
+          <label>Student ID</label>
+          <input type="text" id="studentId" placeholder="Insert your student ID" required />
+          <div id="studentIdMessage"></div>
+
+          <label>Full Name</label>
+          <input type="text" id="fullName" placeholder="Insert your full name" required disabled />
+
+          <label>Email</label>
+          <input type="email" id="email" placeholder="Insert your email" required disabled />
+
+          <label>Password</label>
+          <input type="password" id="password" placeholder="Insert your secret password" required disabled />
+          <div id="strengthMessage"></div>
+
+          <button type="submit" disabled>Register</button>
+        </form>
+
+        <div class="divider">Or Register With</div>
+        <div class="social-buttons">
+          <button class="google-btn">Google</button>
+          <button class="apple-btn">Apple</button>
+        </div>
+
+        <p class="signin-text">Already have an account? <a href="/User_login">Log in here</a></p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("registerForm");
+      const studentId = document.getElementById("studentId");
+      const fullName = document.getElementById("fullName");
+      const email = document.getElementById("email");
+      const password = document.getElementById("password");
+      const registerButton = form.querySelector("button[type='submit']");
+      const studentIdMessage = document.getElementById("studentIdMessage");
+      const strengthMessage = document.getElementById("strengthMessage");
+
+      let isStudentIdValid = false;
+
+      studentId.addEventListener("input", () => {
+        const id = studentId.value.trim();
+        if (id.length < 1) {
+          studentIdMessage.textContent = "";
+          studentIdMessage.className = "";
+          toggleFormFields(true);
+          isStudentIdValid = false;
+          return;
+        }
+
+        // Create AJAX request for validation
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/User_register", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("Accept", "application/json");
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status === 200) {
+              studentIdMessage.textContent = "Student ID is valid!";
+              studentIdMessage.className = "success";
+              toggleFormFields(false);
+              isStudentIdValid = true;
+            } else {
+              let error;
+              try {
+                error = JSON.parse(xhr.responseText);
+                studentIdMessage.textContent = error.detail || "Student ID hasn't matched or already registered";
+              } catch (e) {
+                studentIdMessage.textContent = "Student ID hasn't matched or already registered";
+              }
+              studentIdMessage.className = "error";
+              toggleFormFields(true);
+              isStudentIdValid = false;
+            }
+          }
+        };
+
+        xhr.onerror = function () {
+          console.error("Student ID validation failed");
+          studentIdMessage.textContent = "Error validating Student ID";
+          studentIdMessage.className = "error";
+          toggleFormFields(true);
+          isStudentIdValid = false;
+        };
+
+        xhr.send(JSON.stringify({ college_id: id }));
+      });
+
+      password.addEventListener("input", () => {
+        if (isStudentIdValid) {
+          const strength = getPasswordStrength(password.value);
+          showStrength(strength);
+        }
+      });
+
+      form.addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        if (!isStudentIdValid) {
+          alert("Please enter a valid Student ID!");
+          return;
+        }
+
+        if (!fullName.value.trim()) {
+          alert("Full Name is required!");
+          return;
+        }
+
+        if (!validateEmail(email.value)) {
+          alert("Enter a valid email address!");
+          return;
+        }
+
+        if (password.value.length < 6) {
+          alert("Password must be at least 6 characters long!");
+          return;
+        }
+
+        const payload = {
+          college_id: studentId.value.trim(),
+          name: fullName.value.trim(),
+          email: email.value.trim(),
+          password: password.value
+        };
+
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/User_register", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("Accept", "text/html, application/json");
+
+        xhr.onreadystatechange = function () {
+          if (xhr.readyState === XMLHttpRequest.DONE) {
+           if (xhr.status >= 200 && xhr.status < 300) {
+  // Registration successful — redirect to login
+  window.location.href = "/User_login";
+} else {
+  let error;
+  try {
+    error = JSON.parse(xhr.responseText);
+    alert("Error: " + (error.detail || "Unknown error"));
+  } catch (e) {
+    alert("Error: Unknown error");
+  }
+}
+
+          }
+        };
+
+        xhr.onerror = function () {
+          console.error("Registration failed");
+          alert("An error occurred during registration.");
+        };
+
+        xhr.send(JSON.stringify(payload));
+      });
+
+      function toggleFormFields(disable) {
+        fullName.disabled = disable;
+        email.disabled = disable;
+        password.disabled = disable;
+        registerButton.disabled = disable;
+      }
+
+      function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+      }
+
+      function getPasswordStrength(pwd) {
+        if (pwd.length < 6) return "Weak";
+        const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&\*])/;
+        const mediumRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
+
+        if (strongRegex.test(pwd)) return "Strong";
+        if (mediumRegex.test(pwd)) return "Medium";
+        return "Weak";
+      }
+
+      function showStrength(strength) {
+        strengthMessage.textContent = `Password Strength: ${strength}`;
+        strengthMessage.className = strength.toLowerCase();
+      }
+    });
+  </script>
+</body>
+</html>

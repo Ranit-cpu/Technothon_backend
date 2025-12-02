@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Technothon Login</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(to top right, #05001f, #1c023f);
+      color: #333;
+    }
+
+    header {
+      padding: 20px;
+    }
+
+    .nav-container {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: #aaa;
+    }
+
+    .nav-container .logo {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    nav a {
+      margin: 0 10px;
+      text-decoration: none;
+      color: #aaa;
+      padding: 10px 20px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .auth-links a {
+      color: #aaa;
+      text-decoration: none;
+    }
+
+    .container {
+      display: flex;
+      justify-content: center;
+      margin-top: 50px;
+    }
+
+    .card {
+      display: flex;
+      background: #fff;
+      border-radius: 4px;
+      overflow: hidden;
+      width: 800px;
+      box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-image {
+      background: #ddd;
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .card-form {
+      flex: 1;
+      padding: 40px;
+    }
+
+    .card-form h1 {
+      font-weight: bold;
+      margin-bottom: 10px;
+    }
+
+    .card-form p {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 20px;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+
+    form label {
+      font-weight: bold;
+      margin-top: 10px;
+    }
+
+    form input {
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    form button {
+      background: linear-gradient(to right, #4e54c8, #8f94fb);
+      color: white;
+      padding: 12px;
+      border: none;
+      margin-top: 20px;
+      border-radius: 5px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .divider {
+      text-align: center;
+      margin: 20px 0;
+      color: #888;
+    }
+
+    .social-buttons {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .social-buttons button {
+      flex: 1;
+      padding: 10px;
+      margin: 0 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background: #f8f8f8;
+      cursor: pointer;
+    }
+
+    .signin-text {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .signin-text a {
+      color: #4e54c8;
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    #strengthMessage {
+      margin-top: 5px;
+      font-size: 0.9rem;
+      font-weight: bold;
+    }
+
+    .weak {
+      color: red;
+    }
+
+    .medium {
+      color: orange;
+    }
+
+    .strong {
+      color: green;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="nav-container">
+      <div class="logo">Technothon</div>
+      <nav>
+        <a href="index.html">Home</a>
+        <a href="#">About</a>
+        <a href="#">Events</a>
+        <a href="#">Contact Us</a>
+      </nav>
+      <div class="auth-links">
+        <a href="signup.html">Login / Register</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="card">
+      <div class="card-image">
+        <img src="https://via.placeholder.com/300x400?text=Login+Image" alt="Login image"/>
+      </div>
+      <div class="card-form">
+        <h1>Welcome Back!</h1>
+        <p>Login to continue your Technothon 2025 journey</p>
+        <form id="loginForm">
+          <label>Email</label>
+          <input type="email" id="email" placeholder="Insert your email" required />
+
+          <label>Password</label>
+          <input type="password" id="password" placeholder="Enter your password" required />
+          <div id="strengthMessage"></div>
+
+          <button type="submit">Login</button>
+        </form>
+
+        <div class="divider">Or Sign In With</div>
+        <div class="social-buttons">
+          <button class="google-btn">Google</button>
+          <button class="apple-btn">Apple</button>
+        </div>
+
+        <p class="signin-text">Don't have an account? <a href="/User_register">Register here</a></p>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const form = document.getElementById("loginForm");
+      const password = document.getElementById("password");
+      const email = document.getElementById("email");
+      const strengthMessage = document.getElementById("strengthMessage");
+
+      password.addEventListener("input", () => {
+        const strength = getPasswordStrength(password.value);
+        showStrength(strength);
+      });
+
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        if (!validateEmail(email.value)) {
+          alert("Enter a valid email address!");
+          return;
+        }
+
+        if (password.value.length < 2) {
+          alert("Password must be at least 2 characters long!");
+          return;
+        }
+
+        try {
+          const res = await fetch("/User_login", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              email: email.value,
+              password: password.value
+            })
+          });
+
+          const data = await res.json();
+          if (res.ok) {
+            window.location.href = data.redirect;
+          } else {
+            alert(data.detail || "Login failed");
+          }
+        } catch (error) {
+          alert("An error occurred. Please try again.");
+        }
+      });
+
+      function validateEmail(email) {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+      }
+
+      function getPasswordStrength(pwd) {
+        if (pwd.length < 6) return "Weak";
+        const strongRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#\$%\^&\*])/;
+        const mediumRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/;
+
+        if (strongRegex.test(pwd)) return "Strong";
+        if (mediumRegex.test(pwd)) return "Medium";
+        return "Weak";
+      }
+
+      function showStrength(strength) {
+        strengthMessage.textContent = `Password Strength: ${strength}`;
+        strengthMessage.className = strength.toLowerCase();
+      }
+    });
+  </script>
+</body>
+</html>

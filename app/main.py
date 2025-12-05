@@ -19,7 +19,7 @@ from app.routers.jobs import jobs
 
 import os
 
-app = FastAPI()
+app = FastAPI(root_path="/api")
 
 # ✅ allow frontend development servers
 origins = [
